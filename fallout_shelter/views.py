@@ -3,7 +3,7 @@ from django.shortcuts import render
 
 from fallout_shelter.models import Product
 
-menu = ["О сайте", "Добавить статью", "Обратная связь", "Войти"]
+menu = ["О сайте", "Контакты"]
 
 def index(request):
     context = {
