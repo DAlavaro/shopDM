@@ -1,7 +1,7 @@
 from django.conf.urls.static import static
 from django.urls import path
 
-from fallout_shelter.views import index, contact, about, show_post, show_category
+from fallout_shelter.views import index, contact, about, show_post, show_category, show_post
 from shop import settings
 
 urlpatterns = [

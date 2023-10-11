@@ -1,4 +1,5 @@
 {% load static %}
+{% load fallout_tags %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -53,23 +54,8 @@
                                 <li><a href="{% url 'home' %}">Весь хлам</a></li>
                             {% endif %}
 
-                        {% for c in cats %}
-                            {% if c.pk == cat_selected %}
-                                <li class="selected">{{ c.name }}</li>
-                                {% else %}
-                                <li><a href="{{ c.get_absolute_url }}">{{ c.name }}</a></li>
-                            {% endif %}
-                        {% endfor %}
-                            {#                            <li class="selected">Все категории</li>#}
-                            {#                            <li><a href="#">Актрисы</a></li>#}
-                            {#                            <li><a href="#">Певицы</a></li>#}
-                            {#                            <li><a href="#">Спортсменки</a></li>#}
-                            <li class="share">
-                                <p>Наш канал</p>
-                                <a class="share-yt"
-                                   href="https://www.youtube.com/channel/UClJzWfGWuGJL2t-3dYKcHTA/playlists"
-                                   target="_blank" rel="nofollow"></a>
-                            </li>
+                        {% show_categories 'name' cat_selected %}
+
                         </ul>
                     </td>
                     <!-- Конец Sidebar'а -->

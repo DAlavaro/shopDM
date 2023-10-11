@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from fallout_shelter.models import Product, Category
 
@@ -8,13 +8,12 @@ menu = [
     {'title': 'Контакты', 'url_name': 'contact'},
 ]
 
+
 def index(request):
     object_list = Product.objects.all()
-    cats = Category.objects.all()
 
     context = {
         'object_list': object_list,
-        'cats': cats,
         'title': 'Главная страница',
         'menu': menu,
         'cat_selected': 0,
@@ -39,19 +38,28 @@ def contact(request):
     }
     return render(request, 'fallout_shelter/contact.html', context=context)
 
+
 def show_post(request, pk):
-    return HttpResponse(f'Отображение товара с id = {pk}')
+    post = get_object_or_404(Product, pk=pk)
+
+    context = {
+        'post': post,
+        'menu': menu,
+        'title': post.name,
+        'cat_selected': post.category,
+    }
+
+    return render(request, 'fallout_shelter/post.html', context=context)
+
 
 def show_category(request, pk):
     object_list = Product.objects.filter(category=pk)
-    cats = Category.objects.all()
 
     if len(object_list) == 0:
         raise Http404
 
     context = {
         'object_list': object_list,
-        'cats': cats,
         'title': 'Отображение по уровню хлама',
         'menu': menu,
         'cat_selected': pk,
@@ -61,4 +69,3 @@ def show_category(request, pk):
 
 def page_not_found(request, exception=None):
     return HttpResponseNotFound('<h1>Страница не найдена</h1>')
-
