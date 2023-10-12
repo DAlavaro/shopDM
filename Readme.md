@@ -8,7 +8,7 @@
 
 3. Выполнить команды
 
-- python manage.py migrate
+- python3 manage.py migrate
 - python3 manage.py loaddata data.json
 
 4. Запустить проект

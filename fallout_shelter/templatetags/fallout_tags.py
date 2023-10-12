@@ -21,3 +21,10 @@ def show_categories(sort=None, cat_selected=0):
         cats = Category.objects.order_by(sort)
 
     return {"cats": cats, "cat_selected": cat_selected}
+
+@register.filter()
+def mymedia(value):
+    if value:
+        return f'/media/{value}'
+    else:
+        return '#'

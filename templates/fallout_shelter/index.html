@@ -1,5 +1,5 @@
 {% extends 'fallout_shelter/base.html' %}
-
+{% load fallout_tags %}
 {% block content %}
     <ul class="list-articles">
         {% for p in object_list %}
@@ -10,7 +10,8 @@
                 </div>
 
             {% if p.photo %}
-                <p><img class="img-article-left thumb" src="{{ p.photo.url }}"</p>
+{#              <p><img class="img-article-left thumb" src="{{ p.photo.url }}"></p>#}
+                <p><img class="img-article-left thumb" src="{{ p.photo|mymedia }}"</p>
             {% endif %}
 
                 <h2>{{ p.name }}</h2>
