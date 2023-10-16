@@ -1,10 +1,12 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 
-from fallout_shelter.models import Product, Category
+from .forms import *
+from .models import *
 
 menu = [
     {'title': 'О сайте', 'url_name': 'about'},
+    {'title': 'Добавить хлам', 'url_name': 'add_trash'},
     {'title': 'Контакты', 'url_name': 'contact'},
 ]
 
@@ -30,6 +32,25 @@ def about(request):
     return render(request, 'fallout_shelter/about.html', context=context)
 
 
+def add_trash(request):
+    if request.method == 'POST':
+        form = AddPostForm(request.POST)
+        if form.is_valid():
+            try:
+                Product.objects.create(**form.cleaned_data)
+                return redirect('home')
+            except:
+                form.add(None, 'Ошибка добавления поста')
+    else:
+        form = AddPostForm()
+    context = {
+        'form': form,
+        'title': 'Добавить хлам',
+        'menu': menu,
+    }
+    return render(request, 'fallout_shelter/add_trash.html', context=context)
+
+
 def contact(request):
     context = {
         'object_list': Product.objects.all(),
@@ -39,8 +60,8 @@ def contact(request):
     return render(request, 'fallout_shelter/contact.html', context=context)
 
 
-def show_post(request, pk):
-    post = get_object_or_404(Product, pk=pk)
+def show_post(request, slug):
+    post = get_object_or_404(Product, slug=slug)
 
     context = {
         'post': post,

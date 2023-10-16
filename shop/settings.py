@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'shop.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'fallout_shelter',
+        'NAME': 'fallout',
         'USER': 'postgres',
         'HOST': 'localhost',
         'PORT': '5432',
