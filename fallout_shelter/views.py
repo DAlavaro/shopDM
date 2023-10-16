@@ -34,13 +34,10 @@ def about(request):
 
 def add_trash(request):
     if request.method == 'POST':
-        form = AddPostForm(request.POST)
+        form = AddPostForm(request.POST, request.FILES)
         if form.is_valid():
-            try:
-                Product.objects.create(**form.cleaned_data)
-                return redirect('home')
-            except:
-                form.add(None, 'Ошибка добавления поста')
+            form.save()
+            return redirect('home')
     else:
         form = AddPostForm()
     context = {
