@@ -1,5 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404
 from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView
 
 from .forms import *
 from .models import *
@@ -11,16 +13,20 @@ menu = [
 ]
 
 
-def index(request):
-    object_list = Product.objects.all()
+class ProductHome(ListView):
+    model = Product
+    template_name = 'fallout_shelter/index.html'
+    context_object_name = 'object_list'
 
-    context = {
-        'object_list': object_list,
-        'title': 'Главная страница',
-        'menu': menu,
-        'cat_selected': 0,
-    }
-    return render(request, 'fallout_shelter/index.html', context=context)
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu'] = menu
+        context['title'] = 'Главная страница'
+        context['cat_selected'] = 0
+        return context
+
+    def get_queryset(self):
+        return Product.objects.filter(is_public=True)
 
 
 def about(request):
@@ -32,20 +38,16 @@ def about(request):
     return render(request, 'fallout_shelter/about.html', context=context)
 
 
-def add_trash(request):
-    if request.method == 'POST':
-        form = AddPostForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-    else:
-        form = AddPostForm()
-    context = {
-        'form': form,
-        'title': 'Добавить хлам',
-        'menu': menu,
-    }
-    return render(request, 'fallout_shelter/add_trash.html', context=context)
+class AddTrash(CreateView):
+    form_class = AddPostForm
+    template_name = 'fallout_shelter/add_trash.html'
+    success_url = reverse_lazy('fallout_shelter')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu'] = menu
+        context['title'] = 'Добавление товара'
+        return context
 
 
 def contact(request):
@@ -57,32 +59,36 @@ def contact(request):
     return render(request, 'fallout_shelter/contact.html', context=context)
 
 
-def show_post(request, slug):
-    post = get_object_or_404(Product, slug=slug)
+class ShowPost(DetailView):
+    model = Product
+    template_name = 'fallout_shelter/post.html'
+    slug_url_kwarg = 'post_slug'
+    context_object_name = 'post'
 
-    context = {
-        'post': post,
-        'menu': menu,
-        'title': post.name,
-        'cat_selected': post.category,
-    }
-
-    return render(request, 'fallout_shelter/post.html', context=context)
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu'] = menu
+        context['title'] = context['post']
+        context['cat_selected'] = 0
+        return context
 
 
-def show_category(request, pk):
-    object_list = Product.objects.filter(category=pk)
 
-    if len(object_list) == 0:
-        raise Http404
+class ProductCategory(ListView):
+    model = Product
+    template_name = 'fallout_shelter/index.html'
+    context_object_name = 'object_list'
+    allow_empty = False
 
-    context = {
-        'object_list': object_list,
-        'title': 'Отображение по уровню хлама',
-        'menu': menu,
-        'cat_selected': pk,
-    }
-    return render(request, 'fallout_shelter/index.html', context=context)
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['menu'] = menu
+        context['title'] = 'Категория -' + str(context['object_list'][0].category)
+        context['cat_selected'] = context['object_list'][0].category_id
+        return context
+
+    def get_queryset(self):
+        return Product.objects.filter(category__slug=self.kwargs['cat_slug'], is_public=True)
 
 
 def page_not_found(request, exception=None):

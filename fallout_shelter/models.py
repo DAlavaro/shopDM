@@ -13,12 +13,13 @@ class Product(models.Model):
     price = models.PositiveIntegerField(default=0, verbose_name='цена')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата создания')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата изменения')
+    is_public = models.BooleanField(default=False, verbose_name='Опубликовать')
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('post', kwargs={'slug': self.slug})
+        return reverse('post', kwargs={'post_slug': self.slug})
 
     class Meta:
         verbose_name = 'Продукт'
@@ -36,7 +37,7 @@ class Category(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('category', kwargs={'pk': self.pk})
+        return reverse('category', kwargs={'cat_slug': self.slug})
 
     class Meta:
         verbose_name = 'Категория'

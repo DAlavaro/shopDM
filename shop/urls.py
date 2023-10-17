@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 
-from fallout_shelter.views import index, page_not_found
+from fallout_shelter.views import page_not_found
 
 urlpatterns = [
     path('admin/', admin.site.urls),
