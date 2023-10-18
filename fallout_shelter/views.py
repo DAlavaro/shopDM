@@ -1,5 +1,5 @@
-from django.http import HttpResponse, HttpResponseNotFound, Http404
-from django.shortcuts import render, get_object_or_404, redirect
+from django.http import HttpResponseNotFound
+from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
 
@@ -13,7 +13,7 @@ menu = [
 ]
 
 
-class ProductHome(ListView):
+class ProductListView(ListView):
     model = Product
     template_name = 'fallout_shelter/index.html'
     context_object_name = 'object_list'

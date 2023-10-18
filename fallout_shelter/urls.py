@@ -5,7 +5,7 @@ from .views import *
 from shop import settings
 
 urlpatterns = [
-    path('', ProductHome.as_view(), name='home'),
+    path('', ProductListView.as_view(), name='home'),
     path('about/', about,  name='about'),
     path('contact/', contact, name='contact'),
     path('addtrash/', AddTrash.as_view(), name='add_trash'),
